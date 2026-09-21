@@ -1,0 +1,158 @@
+*{
+
+    margin: 0 auto;
+
+    font-family: sans-serif;
+
+    box-sizing: border-box;
+
+
+}
+
+body{
+
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+.conteiner-pesquisa{
+
+    padding-left: 40px;
+    
+    max-width: 360px;
+
+    width: 85%;
+
+    height: 50;
+
+    margin-top: 16px;
+
+    margin-bottom: 12px;
+
+    border-radius: 50px;
+
+    background-color: #fcfcfc;
+
+    display: flex;
+
+    justify-content: center;
+
+    border: 1px solid black;
+
+
+
+}
+#lupa-pesquisa{
+
+
+    margin: 14px 10px;
+
+    width: 21px;
+
+    height: 22px;
+
+}
+
+.barra-pesquisa{
+
+    font-size: 20px;
+
+    margin: 14px 0px;
+
+    border: none;
+
+    padding: 0 10px;
+
+    outline: none;
+
+    background: transparent;
+
+}
+
+.mercado2d>*{
+
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+}
+
+/*mexe nos elementos internos*/
+.coluna>*{
+
+    width: 70px;
+
+    height: 50px;
+
+    border: 2px solid black;
+
+    margin: 0 0;
+
+    text-align: center;
+
+    display: flex;
+
+    padding: 0 4px;
+    
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.coluna{
+
+    max-width: 500px;
+
+    max-height: 100px;
+
+    display: flex;
+
+    flex-direction: row;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 0px 0px;
+    
+    margin: 0px 0px;
+
+    font-size: 18px;
+
+}
+
+.mostrar-informações-produtos{
+
+
+
+    max-width: 500px;
+
+    display: flex;
+
+    flex-direction: row;
+
+    font-size: 18px;
+
+    border: 1px solid black;
+
+    margin: 10px 20px;
+
+    padding: 4px 4px;
+
+    align-items: center;
+
+    
+}
+
+#S15{
+
+    background-color: #49bf0a;
+
+}
