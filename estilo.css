@@ -83,8 +83,16 @@ body{
 
 }
 
-/*mexe nos elementos internos*/
+.conjunto-gondula{
+
+    border-radius: 10px;
+
+}
+
+/*mexe nos elementos internos das colunas*/
 .coluna>*{
+    
+    border-radius: 5px;
 
     width: 70px;
 
@@ -106,7 +114,10 @@ body{
 
 }
 
+
+/*mexe nas colunas*/
 .coluna{
+
 
     max-width: 500px;
 
@@ -134,6 +145,8 @@ body{
 
     max-width: 500px;
 
+    max-height: 100px;
+
     display: flex;
 
     flex-direction: row;
@@ -141,6 +154,8 @@ body{
     font-size: 18px;
 
     border: 1px solid black;
+
+    border-radius: 5px;
 
     margin: 10px 20px;
 
@@ -153,6 +168,11 @@ body{
 
 #S15{
 
+    border-radius: 4px;
+    padding: 4px 7px;
     background-color: #49bf0a;
 
 }
+
+
+
