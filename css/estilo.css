@@ -135,15 +135,8 @@ header h1 {
     font-size: 15px;
 }
 
-.secao-destacada {
+.destaque {
     background-color: var(--laranja-sinal);
     outline: 3px solid var(--amarelo-etiqueta);
-    outline-offset: 2px;
-}
-
-/* Acessibilidade: foco visível pra navegação por teclado */
-.barra-pesquisa:focus-visible,
-button:focus-visible {
-    outline: 3px solid var(--laranja-sinal);
     outline-offset: 2px;
 }
