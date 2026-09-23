@@ -74,7 +74,7 @@ header h1 {
 }
 
 /* Resultado */
-.info-produtos {
+#resultados {
     margin-top: 16px;
     min-height: 0;
     display: flex;
@@ -82,7 +82,7 @@ header h1 {
     gap: 8px;
 }
 
-.info-produtos:empty {
+#resultados:empty {
     display: none;
 }
 
