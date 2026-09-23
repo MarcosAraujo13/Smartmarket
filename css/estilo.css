@@ -25,12 +25,12 @@ body {
 
 main {
     width: 100%;
-    max-width: 480px;
-    padding: 20px 16px 60px;
+    max-width: 350px;
+    padding: 1px 5px;
 }
 
 header {
-    padding: 24px 0 20px;
+    padding: 20px 0 20px;
     border-bottom: 3px solid var(--verde-mercado);
     margin-bottom: 20px;
 }
@@ -103,40 +103,78 @@ header h1 {
 }
 
 /* Mapa do mercado */
+
+
 #mercado2d {
+    
+    height: 700px;
+    width: 350px;
     margin-top: 28px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.gondula>*{
+
+   display: flex;
+   flex-direction: column;
+
 }
 
 .gondula {
+    margin: 0 4px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    flex-direction: row;
+    height: 600px;
 }
 
 .coluna {
     display: flex;
-    gap: 6px;
+    flex-direction: column;
 }
 
 .coluna > * {
     flex: 1;
     aspect-ratio: 1.5;
-    background-color: var(--verde-mercado);
-    color: #FFFFFF;
-    border-radius: 6px;
+    color: var(--verde-mercado);
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 20px;
+    border: 1px solid black;
+    width: 70px;
+
 }
 
 .destaque {
     background-color: var(--laranja-sinal);
     outline: 3px solid var(--amarelo-etiqueta);
     outline-offset: 2px;
+}
+
+.corredor{
+
+    font-size: 25px;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: center;
+    width: 182px;
+    color: var(--verde-mercado); 
+    font-weight: bold;
+    flex-direction: column;
+    height: 500px;
+
+}
+
+.passagem{
+
+    border: none;
+
 }
