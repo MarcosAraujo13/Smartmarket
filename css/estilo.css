@@ -30,20 +30,23 @@ main {
 }
 
 header {
-    padding: 20px 0 20px;
+    padding: 5px 0 10px;
     border-bottom: 3px solid var(--verde-mercado);
-    margin-bottom: 20px;
+    margin-bottom: 4px;
+    margin-top: 4px;
 }
 
 header h1 {
     font-family: sans-serif;
-    font-size: 28px;
+    font-size: 22px;
     color: var(--verde-mercado);
     letter-spacing: -0.5px;
+    font-weight: bold;
 }
 
 /* Busca */
 #area-pesquisa {
+    margin-top: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -86,6 +89,23 @@ header h1 {
     display: none;
 }
 
+.secaoResultado{
+
+    background-color: green;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.secao {
+    background-color: #FAF8F3;
+}
+
+.secao.selecionada {
+    background-color: green;
+    color: white;
+}
+
+
 .produto {
     background-color: #FFFFFF;
     border-left: 5px solid var(--amarelo-etiqueta);
@@ -109,7 +129,7 @@ header h1 {
     
     height: 700px;
     width: 350px;
-    margin-top: 28px;
+    margin-top: 16px;
     display: flex;
     position: relative;
     overflow-x: auto;
@@ -124,10 +144,11 @@ header h1 {
 }
 
 .gondula {
+
     margin: 0 4px;
     display: flex;
     flex-direction: row;
-    height: 600px;
+    height: 550px;
 }
 
 .coluna {
