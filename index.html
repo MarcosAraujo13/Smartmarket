@@ -2,7 +2,6 @@
 <html lang="pt-br">
 
 <head>
-    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,23 +9,21 @@
     <link rel="stylesheet" href="css/estilo.css" />
     <script src="js/data.js" defer></script>
     <script src="js/script.js" defer></script>
-
     <title>Smartmarket</title>
 </head>
 
 <body>
+    <header>
+        <h1>Smartmarket</h1>
+    </header>
     <main>
-        <div class="conteiner-pesquisa">
-            <img id="lupa-pesquisa" src="image/lupa de pesquisa.jpg" />
-            <input 
-            type="text" 
-            class="barra-pesquisa" 
-            placeholder="Feijão"
-            id="pesquisa"
-             />
+        <div id="area-pesquisa">
+            <img id="lupaImg" src="image/lupa.svg" alt=""/>
+            <input type="text" class="barra-pesquisa" placeholder="Feijão"/>
         </div>
-        <section class="mercado2d">
-            <div class="conjunto-gondula">
+        <section class="info-produtos" id="resultados"></section>
+        <section id="mercado2d">
+            <div class="gondula">
                 <div class="coluna">
                     <div> S: 32</div>
                     <div> S: 31</div>
@@ -40,7 +37,7 @@
                     <div> S: 28</div>
                 </div>
             </div>
-            <div class="conjunto-gondula">
+            <div class="gondula">
                 <div class="coluna">
                     <div> S: 24</div>
                     <div> S: 23</div>
@@ -54,10 +51,10 @@
                     <div> S: 20</div>
                 </div>
             </div>
-            <div class="conjunto-gondula">
+            <div class="gondula">
                 <div class="coluna">
                     <div> S: 16</div>
-                    <div class="S15"> S: 15</div> <!--Mudei de id para class. ids tem que ser unicos mas o S15 é usado 2 vezes (sei q é ex kkkkk).  Erick-->
+                    <div> S: 15</div>
                     <div> S: 14</div>
                     <div> S: 13</div>
                 </div>
@@ -68,7 +65,7 @@
                     <div> S: 12</div>
                 </div>
             </div>
-            <div class="conjunto-gondula">
+            <div class="gondula">
                 <div class="coluna">
                     <div> S: 8</div>
                     <div> S: 7</div>
@@ -83,14 +80,7 @@
                 </div>
             </div>
         </section>
-        <section 
-        class="mostrar-informacoes-produtos"
-        id="resultados"
-        >
-
-        </section>
     </main>
-
 </body>
 
 </html>
