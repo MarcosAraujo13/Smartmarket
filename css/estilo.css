@@ -70,6 +70,7 @@ header h1 {
     font-family: 'Inter', sans-serif;
     font-size: 17px;
     color: var(--grafite);
+    font-weight: bold;
 }
 
 #barra-pesquisa::placeholder {
@@ -91,9 +92,20 @@ header h1 {
 
 .secaoResultado{
 
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
     background-color: green;
     padding: 5px 10px;
     border-radius: 5px;
+
+}
+
+
+.valor-produto{
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+
 }
 
 .secao {

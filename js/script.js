@@ -71,7 +71,7 @@ function pesquisar() {
                 <span class="secaoResultado">
                     Seção ${produto.seção}
                 </span>
-                <span>
+                <span class="valor-produto">
                     R$ ${produto.valor.toFixed(2)}
                 </span>
             `;
