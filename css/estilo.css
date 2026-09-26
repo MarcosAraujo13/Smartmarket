@@ -127,6 +127,7 @@ header h1 {
     flex-wrap: wrap;
     gap: 4px 10px;
     font-size: 15px;
+    cursor: pointer;
 }
 
 .produto span:first-child {

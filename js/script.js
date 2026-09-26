@@ -76,6 +76,14 @@ function pesquisar() {
                 </span>
             `;
 
+            // Ao clicar no resultado, preenche a barra de pesquisa
+            // com o nome do produto e refaz a busca (destacando
+            // só a seção daquele produto)
+            encontrado.addEventListener("click", () => {
+                campoPesquisa.value = produto.nome;
+                pesquisar();
+            });
+
             resultados.appendChild(encontrado);
         });
     }
