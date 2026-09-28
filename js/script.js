@@ -3,6 +3,11 @@ const resultados = document.getElementById("resultados");
 
 const secoes = document.querySelectorAll(".secao");
 
+// Cada corredor tem 16 seções (1-16, 17-32, 33-48)
+function corredorDaSecao(secao) {
+    return Math.ceil(secao / 16);
+}
+
 campoPesquisa.addEventListener("input", pesquisar);
 
 function pesquisar() {
@@ -77,7 +82,7 @@ function pesquisar() {
             encontrado.innerHTML = `
                 <span>${produto.nome}</span>
                 <span class="secaoResultado">
-                    Seção ${produto.seção}
+                    Corredor ${corredorDaSecao(produto.seção)} · Seção ${produto.seção}
                 </span>
                 <span class="valor-produto">
                     R$ ${produto.valor.toFixed(2)}
