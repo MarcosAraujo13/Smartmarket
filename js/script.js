@@ -7,7 +7,15 @@ campoPesquisa.addEventListener("input", pesquisar);
 
 function pesquisar() {
 
-    const textoPesquisado = campoPesquisa.value.toLowerCase();
+    //Tirar os acentos para normalizar a pesquisa
+    function normalizar(texto){
+        return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    const textoPesquisado = normalizar(campoPesquisa.value);
 
     resultados.innerHTML = "";
 
@@ -17,15 +25,15 @@ function pesquisar() {
     });
 
     // Procura os produtos
-    const encontrados = produtos.filter(produto =>
-        produto.nome.toLowerCase().includes(textoPesquisado)
+    const encontrados = produtos.filter(produto => normalizar(produto.nome). includes(textoPesquisado)
     );
+
 
     // Ordena os resultados
     encontrados.sort((a, b) => {
 
-        const posicaoA = a.nome.toLowerCase().indexOf(textoPesquisado);
-        const posicaoB = b.nome.toLowerCase().indexOf(textoPesquisado);
+        const posicaoA = normalizar(a.nome).indexOf(textoPesquisado);
+        const posicaoB = normalizar(b.nome).indexOf(textoPesquisado);
 
         return posicaoA - posicaoB;
 
