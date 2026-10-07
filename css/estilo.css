@@ -26,14 +26,14 @@ body {
 main {
     width: 100%;
     max-width: 350px;
-    padding: 1px 5px;
+    padding: 0 5px;
 }
 
 header {
     padding: 0 10px;
     border-bottom: 3px solid var(--verde-mercado);
     margin-bottom: 2px;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 header h1 {
@@ -46,7 +46,7 @@ header h1 {
 
 /* Busca */
 #area-pesquisa {
-    margin-top: 10px;
+    margin-top: 5px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -155,9 +155,9 @@ header h1 {
 
 .gondula>*{
 
-   display: flex;
-   flex-direction: column;
-   height: 50px;
+    display: flex;
+    flex-direction: column;
+    height: 50px;
 
 }
 
@@ -166,9 +166,10 @@ header h1 {
     display: flex;
     flex-direction: row;
     height: 420px;
-    min-width: 98%;
+    min-width: 95%;
     scroll-snap-align: start;
     gap: 1px;
+
 }
 
 .coluna {
@@ -210,7 +211,7 @@ header h1 {
     color: var(--verde-mercado); 
     font-weight: bold;
     flex-direction: column;
-    height: 400px;
+    height: 100px;
 
 }
 
@@ -224,6 +225,7 @@ header h1 {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-top: 10px;
 }
 
 #area-lista label {
