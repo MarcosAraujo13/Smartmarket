@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de compras | Smartmarket</title>
+  <link rel="stylesheet" href="css/lista.css">
+</head>
+<body>
+  <header class="topo-lista">
+    <a href="index.html" class="voltar">← Voltar ao mapa</a>
+    <h1>Minha lista de compras</h1>
+  </header>
+
+  <main class="conteudo-lista">
+    <section class="entrada">
+      <label for="lista-compras">Digite os itens (um por linha ou separados por vírgula)</label>
+      <textarea id="lista-compras" rows="6" placeholder="arroz&#10;feijão&#10;banana"></textarea>
+      <div class="acoes">
+        <button id="btn-organizar" type="button">Organizar lista</button>
+        <button id="btn-limpar" type="button" class="secundario">Limpar lista</button>
+      </div>
+    </section>
+
+    <section id="resultado-lista" aria-live="polite"></section>
+
+    <a href="index.html" class="ver-mapa">Ver no mapa</a>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/lista.js"></script>
+</body>
+</html>

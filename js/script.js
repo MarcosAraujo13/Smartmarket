@@ -101,3 +101,8 @@ function pesquisar() {
         });
     }
 }
+const secoesDaLista = JSON.parse(localStorage.getItem("secoesLista")) || [];
+secoesDaLista.forEach(numero => {
+    const secao = document.querySelector(`.secao[data-secao="${numero}"]`);
+    if (secao) secao.classList.add("selecionada");
+});
