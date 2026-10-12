@@ -1,7 +1,11 @@
-const campoLista = document.getElementById("lista-compras");
-const botaoOrganizar = document.getElementById("btn-organizar");
-const botaoLimpar = document.getElementById("btn-limpar");
+const formItem = document.getElementById("form-item");
+const campoNovoItem = document.getElementById("novo-item");
+const avisoForm = document.getElementById("aviso-form");
+const filtrosEl = document.getElementById("filtros");
 const saidaLista = document.getElementById("resultado-lista");
+const acoesLista = document.getElementById("acoes-lista");
+const botaoLimparComprados = document.getElementById("btn-limpar-comprados");
+const botaoLimparTudo = document.getElementById("btn-limpar");
 
 const SECOES_POR_CORREDOR = 16;
 const IGNORAR = new Set(["de", "da", "do", "das", "dos", "e", "com", "para", "em", "a", "o", "um", "uma"]);
@@ -12,13 +16,17 @@ const CHAVE_SECOES = "secoesLista";
 
 // Os três marcadores: azul, vermelho e verde (as cores ficam no lista.css)
 const STATUS = {
-    pendente:     { rotulo: "○ Falta comprar",      classe: "status-pendente" },
-    indisponivel: { rotulo: "✕ Não tem no mercado", classe: "status-indisponivel" },
-    comprado:     { rotulo: "✓ Comprado",           classe: "status-comprado" }
+    pendente:     { nome: "Falta comprar",      simbolo: "○", classe: "status-pendente" },
+    indisponivel: { nome: "Não tem no mercado", simbolo: "✕", classe: "status-indisponivel" },
+    comprado:     { nome: "Comprado",           simbolo: "✓", classe: "status-comprado" }
 };
+
+// Ordem na tela: o que falta comprar primeiro, comprados por último
+const ORDEM_STATUS = { pendente: 0, indisponivel: 1, comprado: 2 };
 
 // Cada entrada da lista é { item: "arroz", status: "pendente" }
 let lista = carregarLista();
+let filtroAtual = "todos";
 
 function normalizarTexto(texto) {
     return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -114,62 +122,29 @@ function salvarLista() {
 }
 
 // O mapa (index.html) lê estas seções para destacar só o que ainda falta comprar
-function salvarSecoesPendentes(encontrados) {
+function salvarSecoesPendentes(linhas) {
     const secoes = [...new Set(
-        encontrados.filter(e => e.entrada.status === "pendente").map(e => e.secao)
+        linhas
+            .filter(l => l.local && l.entrada.status === "pendente")
+            .map(l => l.local.secao)
     )];
     try {
         localStorage.setItem(CHAVE_SECOES, JSON.stringify(secoes));
     } catch { /* ignora */ }
 }
 
-// ---------- Montar a lista a partir do texto digitado ----------
+// ---------- Onde o item está no mercado ----------
 
-function lerItensDoCampo() {
-    return campoLista.value
-        .split(/[\n,;]+/)
-        .map(i => i.replace(/^[\s\-–•*]+/, "").trim())
-        .filter(Boolean);
-}
+const cacheLocal = new Map();
 
-function organizarLista() {
-    // Quem já estava na lista mantém o marcador que tinha
-    const anteriores = new Map(lista.map(e => [normalizarTexto(e.item), e.status]));
-    const vistos = new Set();
-    lista = [];
+// Devolve null se o produto não existe no mapa
+function localizar(item) {
+    if (cacheLocal.has(item)) return cacheLocal.get(item);
 
-    lerItensDoCampo().forEach(item => {
-        const chave = normalizarTexto(item);
-        if (vistos.has(chave)) return;
-        vistos.add(chave);
-        lista.push({ item, status: anteriores.get(chave) || "pendente" });
-    });
+    const r = buscarItem(item);
+    let local = null;
 
-    salvarLista();
-    renderizar();
-}
-
-function limparLista() {
-    lista = [];
-    campoLista.value = "";
-    salvarLista();
-    try { localStorage.removeItem(CHAVE_SECOES); } catch { /* ignora */ }
-    renderizar();
-}
-
-// ---------- Desenhar ----------
-
-function renderizar() {
-    const encontrados = [];
-    const semMapa = [];
-
-    lista.forEach((entrada, posicao) => {
-        const r = buscarItem(entrada.item);
-        if (!r || !r.produtos.length) {
-            semMapa.push({ entrada, posicao });
-            return;
-        }
-
+    if (r && r.produtos.length) {
         // Agrupa os produtos por seção e escolhe a seção com mais opções
         const porSecao = new Map();
         r.produtos.forEach(p => {
@@ -184,34 +159,82 @@ function renderizar() {
             }
         });
 
-        encontrados.push({
-            entrada,
-            posicao,
+        local = {
             secao: melhor.secao,
             produtos: melhor.lista.slice(0, 3),
             total: melhor.lista.length,
             outras: [...porSecao.keys()].filter(s => s !== melhor.secao).sort((a, b) => a - b),
             aproximado: r.aproximado
-        });
-    });
+        };
+    }
 
-    // Ordem do percurso: pela numeração das seções
-    encontrados.sort((a, b) => a.secao - b.secao);
-
-    desenhar(encontrados, semMapa);
-    salvarSecoesPendentes(encontrados);
+    cacheLocal.set(item, local);
+    return local;
 }
 
-function resumoHtml() {
-    if (!lista.length) return "";
-    const totais = { pendente: 0, indisponivel: 0, comprado: 0 };
+// ---------- Adicionar, marcar e remover ----------
+
+let temporizadorAviso;
+
+function avisar(texto) {
+    avisoForm.textContent = texto;
+    clearTimeout(temporizadorAviso);
+    if (texto) {
+        temporizadorAviso = setTimeout(() => { avisoForm.textContent = ""; }, 3500);
+    }
+}
+
+function adicionarItens(texto) {
+    const novos = texto
+        .split(/[\n,;]+/)
+        .map(i => i.replace(/^[\s\-–•*]+/, "").trim())
+        .filter(Boolean);
+
+    const existentes = new Set(lista.map(e => normalizarTexto(e.item)));
+    const repetidos = [];
+    let adicionou = false;
+
+    novos.forEach(item => {
+        const chave = normalizarTexto(item);
+        if (existentes.has(chave)) {
+            repetidos.push(item);
+            return;
+        }
+        existentes.add(chave);
+        lista.push({ item, status: "pendente" });
+        adicionou = true;
+    });
+
+    if (adicionou) {
+        filtroAtual = "todos"; // para o item novo aparecer
+        salvarLista();
+        renderizar();
+    }
+    avisar(repetidos.length ? `Já estava na lista: ${repetidos.join(", ")}.` : "");
+}
+
+// ---------- Desenhar ----------
+
+function desenharFiltros() {
+    if (!lista.length) {
+        filtrosEl.innerHTML = "";
+        return;
+    }
+
+    const totais = { todos: lista.length, pendente: 0, indisponivel: 0, comprado: 0 };
     lista.forEach(e => totais[e.status]++);
 
-    const chips = Object.entries(STATUS).map(([chave, s]) =>
-        `<span class="chip ${s.classe}">${s.rotulo.slice(2)}: ${totais[chave]}</span>`
-    ).join("");
+    const filtros = [
+        { chave: "todos", nome: "Todos", classe: "f-todos" },
+        ...Object.entries(STATUS).map(([chave, s]) => ({ chave, nome: s.nome, classe: s.classe }))
+    ];
 
-    return `<div class="resumo-lista">${chips}</div>`;
+    filtrosEl.innerHTML = filtros.map(f => {
+        const ativo = filtroAtual === f.chave;
+        return `<button type="button"
+                    class="filtro ${f.classe}${ativo ? " ativo" : ""}"
+                    data-filtro="${f.chave}" aria-pressed="${ativo}">${f.nome} ${totais[f.chave]}</button>`;
+    }).join("");
 }
 
 function marcadoresHtml(entrada, posicao) {
@@ -221,78 +244,124 @@ function marcadoresHtml(entrada, posicao) {
             return `<button type="button"
                         class="marcador ${s.classe}${ativo ? " ativo" : ""}"
                         data-posicao="${posicao}" data-status="${chave}"
-                        aria-pressed="${ativo}">${s.rotulo}</button>`;
+                        aria-pressed="${ativo}">${s.simbolo} ${s.nome}</button>`;
         }).join("")
     }</div>`;
 }
 
-function itemHtml(entrada, posicao, detalhesHtml) {
-    return `
-        <div class="lista-item ${STATUS[entrada.status].classe}">
-            <span class="nome-item">${esc(entrada.item)}</span>
-            ${detalhesHtml}
-            ${marcadoresHtml(entrada, posicao)}
-        </div>`;
-}
+function tarefaHtml(linha) {
+    const { entrada, posicao, local } = linha;
 
-function desenhar(encontrados, semMapa) {
-    let html = resumoHtml();
-    let corredorAtual = null;
+    const etiqueta = local
+        ? `Corredor ${Math.ceil(local.secao / SECOES_POR_CORREDOR)} · Seção ${local.secao}`
+        : "Sem localização";
 
-    encontrados.forEach(e => {
-        const corredor = Math.ceil(e.secao / SECOES_POR_CORREDOR);
-        if (corredor !== corredorAtual) {
-            html += `<h2 class="lista-titulo-corredor">Corredor ${corredor}</h2>`;
-            corredorAtual = corredor;
-        }
-
-        const extras = e.total - e.produtos.length;
-        const detalhes = `
-            <span class="secao-item">Seção ${e.secao}</span>
-            <span class="detalhe-item">
-                ${e.produtos.map(p => esc(p.nome)).join(", ")}${extras > 0 ? ` e mais ${extras}` : ""}
-            </span>
-            ${e.outras.length ? `<span class="detalhe-item">Também em: seção ${e.outras.join(", ")}</span>` : ""}
-            ${e.aproximado ? `<span class="detalhe-item">Busca aproximada, confira se é esse produto.</span>` : ""}`;
-
-        html += itemHtml(e.entrada, e.posicao, detalhes);
-    });
-
-    if (semMapa.length) {
-        html += `<h2 class="lista-titulo-corredor">Não encontramos no mapa</h2>`;
-        semMapa.forEach(s => {
-            html += itemHtml(
-                s.entrada,
-                s.posicao,
-                `<span class="detalhe-item">Procure um atendente.</span>`
-            );
-        });
+    let detalhe = "Procure um atendente.";
+    if (local) {
+        const extras = local.total - local.produtos.length;
+        detalhe = (local.aproximado ? "Busca aproximada, confira: " : "") +
+            local.produtos.map(p => p.nome).join(", ") +
+            (extras > 0 ? ` e mais ${extras}` : "") +
+            (local.outras.length ? ` (também em: seção ${local.outras.join(", ")})` : "");
     }
 
-    saidaLista.innerHTML = html;
+    return `
+        <li class="tarefa ${STATUS[entrada.status].classe}">
+            <div class="tarefa-info">
+                <span class="tarefa-nome">${esc(entrada.item)}</span>
+                <span class="tarefa-local">${esc(etiqueta)}</span>
+            </div>
+            <div class="tarefa-detalhe" title="${esc(detalhe)}">${esc(detalhe)}</div>
+            ${marcadoresHtml(entrada, posicao)}
+            <button type="button" class="remover" data-posicao="${posicao}"
+                    aria-label="Remover ${esc(entrada.item)}" title="Remover">×</button>
+        </li>`;
+}
+
+function renderizar() {
+    const linhas = lista.map((entrada, posicao) => ({
+        entrada,
+        posicao,
+        local: localizar(entrada.item)
+    }));
+
+    salvarSecoesPendentes(linhas);
+    desenharFiltros();
+    acoesLista.hidden = lista.length === 0;
+
+    const visiveis = linhas
+        .filter(l => filtroAtual === "todos" || l.entrada.status === filtroAtual)
+        .sort((a, b) =>
+            ORDEM_STATUS[a.entrada.status] - ORDEM_STATUS[b.entrada.status] ||
+            (a.local ? 0 : 1) - (b.local ? 0 : 1) ||
+            (a.local && b.local ? a.local.secao - b.local.secao : 0) ||
+            a.posicao - b.posicao
+        );
+
+    if (!lista.length) {
+        saidaLista.innerHTML = `<li class="vazio">Sua lista está vazia. Adicione o primeiro item acima.</li>`;
+    } else if (!visiveis.length) {
+        saidaLista.innerHTML = `<li class="vazio">Nenhum item com este marcador.</li>`;
+    } else {
+        saidaLista.innerHTML = visiveis.map(tarefaHtml).join("");
+    }
 }
 
 // ---------- Eventos ----------
 
-// Um único "ouvinte" cuida dos cliques em todos os marcadores
+formItem.addEventListener("submit", evento => {
+    evento.preventDefault();
+    if (!campoNovoItem.value.trim()) return;
+    adicionarItens(campoNovoItem.value);
+    campoNovoItem.value = "";
+    campoNovoItem.focus();
+});
+
+// Um único "ouvinte" cuida dos cliques nos marcadores e no botão de remover
 saidaLista.addEventListener("click", evento => {
-    const botao = evento.target.closest(".marcador");
+    const botaoMarcador = evento.target.closest(".marcador");
+    if (botaoMarcador) {
+        const entrada = lista[Number(botaoMarcador.dataset.posicao)];
+        if (!entrada) return;
+
+        const novo = botaoMarcador.dataset.status;
+        // Clicar de novo no marcador ativo (vermelho ou verde) volta para "falta comprar"
+        entrada.status = entrada.status === novo ? "pendente" : novo;
+
+        salvarLista();
+        renderizar();
+        return;
+    }
+
+    const botaoRemover = evento.target.closest(".remover");
+    if (botaoRemover) {
+        lista.splice(Number(botaoRemover.dataset.posicao), 1);
+        salvarLista();
+        renderizar();
+    }
+});
+
+filtrosEl.addEventListener("click", evento => {
+    const botao = evento.target.closest(".filtro");
     if (!botao) return;
+    filtroAtual = botao.dataset.filtro;
+    renderizar();
+});
 
-    const entrada = lista[Number(botao.dataset.posicao)];
-    if (!entrada) return;
-
-    const novo = botao.dataset.status;
-    // Clicar de novo no marcador ativo (vermelho ou verde) volta para "falta comprar"
-    entrada.status = entrada.status === novo ? "pendente" : novo;
-
+botaoLimparComprados.addEventListener("click", () => {
+    lista = lista.filter(e => e.status !== "comprado");
     salvarLista();
     renderizar();
 });
 
-botaoOrganizar.addEventListener("click", organizarLista);
-botaoLimpar.addEventListener("click", limparLista);
+botaoLimparTudo.addEventListener("click", () => {
+    if (!lista.length) return;
+    if (!confirm("Apagar todos os itens da lista?")) return;
+    lista = [];
+    filtroAtual = "todos";
+    salvarLista();
+    renderizar();
+});
 
 // Ao abrir a página, mostra a lista que já estava salva
-campoLista.value = lista.map(e => e.item).join("\n");
 renderizar();
