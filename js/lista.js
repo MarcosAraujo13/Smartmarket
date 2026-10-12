@@ -1,12 +1,27 @@
 const campoLista = document.getElementById("lista-compras");
 const botaoOrganizar = document.getElementById("btn-organizar");
+const botaoLimpar = document.getElementById("btn-limpar");
 const saidaLista = document.getElementById("resultado-lista");
 
 const SECOES_POR_CORREDOR = 16;
 const IGNORAR = new Set(["de", "da", "do", "das", "dos", "e", "com", "para", "em", "a", "o", "um", "uma"]);
 
+// Chaves usadas para guardar dados no navegador
+const CHAVE_LISTA = "listaCompras";
+const CHAVE_SECOES = "secoesLista";
+
+// Os três marcadores: azul, vermelho e verde (as cores ficam no lista.css)
+const STATUS = {
+    pendente:     { rotulo: "○ Falta comprar",      classe: "status-pendente" },
+    indisponivel: { rotulo: "✕ Não tem no mercado", classe: "status-indisponivel" },
+    comprado:     { rotulo: "✓ Comprado",           classe: "status-comprado" }
+};
+
+// Cada entrada da lista é { item: "arroz", status: "pendente" }
+let lista = carregarLista();
+
 function normalizarTexto(texto) {
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
 
 // Reduz plural: feijões -> feijao, pães -> pao, ovos -> ovo
@@ -80,21 +95,78 @@ function esc(texto) {
     ));
 }
 
-function organizarLista() {
-    const itens = [...new Set(
-        campoLista.value
-            .split(/[\n,;]+/)
-            .map(i => i.replace(/^[\s\-–•*]+/, "").trim())
-            .filter(Boolean)
+// ---------- Guardar e recuperar a lista (localStorage) ----------
+
+function carregarLista() {
+    try {
+        const salva = JSON.parse(localStorage.getItem(CHAVE_LISTA));
+        if (!Array.isArray(salva)) return [];
+        return salva.filter(e => e && typeof e.item === "string" && STATUS[e.status]);
+    } catch {
+        return [];
+    }
+}
+
+function salvarLista() {
+    try {
+        localStorage.setItem(CHAVE_LISTA, JSON.stringify(lista));
+    } catch { /* sem armazenamento disponível: a lista só vale nesta visita */ }
+}
+
+// O mapa (index.html) lê estas seções para destacar só o que ainda falta comprar
+function salvarSecoesPendentes(encontrados) {
+    const secoes = [...new Set(
+        encontrados.filter(e => e.entrada.status === "pendente").map(e => e.secao)
     )];
+    try {
+        localStorage.setItem(CHAVE_SECOES, JSON.stringify(secoes));
+    } catch { /* ignora */ }
+}
 
+// ---------- Montar a lista a partir do texto digitado ----------
+
+function lerItensDoCampo() {
+    return campoLista.value
+        .split(/[\n,;]+/)
+        .map(i => i.replace(/^[\s\-–•*]+/, "").trim())
+        .filter(Boolean);
+}
+
+function organizarLista() {
+    // Quem já estava na lista mantém o marcador que tinha
+    const anteriores = new Map(lista.map(e => [normalizarTexto(e.item), e.status]));
+    const vistos = new Set();
+    lista = [];
+
+    lerItensDoCampo().forEach(item => {
+        const chave = normalizarTexto(item);
+        if (vistos.has(chave)) return;
+        vistos.add(chave);
+        lista.push({ item, status: anteriores.get(chave) || "pendente" });
+    });
+
+    salvarLista();
+    renderizar();
+}
+
+function limparLista() {
+    lista = [];
+    campoLista.value = "";
+    salvarLista();
+    try { localStorage.removeItem(CHAVE_SECOES); } catch { /* ignora */ }
+    renderizar();
+}
+
+// ---------- Desenhar ----------
+
+function renderizar() {
     const encontrados = [];
-    const naoEncontrados = [];
+    const semMapa = [];
 
-    itens.forEach(item => {
-        const r = buscarItem(item);
+    lista.forEach((entrada, posicao) => {
+        const r = buscarItem(entrada.item);
         if (!r || !r.produtos.length) {
-            naoEncontrados.push(item);
+            semMapa.push({ entrada, posicao });
             return;
         }
 
@@ -106,12 +178,15 @@ function organizarLista() {
         });
 
         let melhor = null;
-        porSecao.forEach((lista, secao) => {
-            if (!melhor || lista.length > melhor.lista.length) melhor = { secao, lista };
+        porSecao.forEach((produtosDaSecao, secao) => {
+            if (!melhor || produtosDaSecao.length > melhor.lista.length) {
+                melhor = { secao, lista: produtosDaSecao };
+            }
         });
 
         encontrados.push({
-            item,
+            entrada,
+            posicao,
             secao: melhor.secao,
             produtos: melhor.lista.slice(0, 3),
             total: melhor.lista.length,
@@ -123,54 +198,101 @@ function organizarLista() {
     // Ordem do percurso: pela numeração das seções
     encontrados.sort((a, b) => a.secao - b.secao);
 
-    desenhar(encontrados, naoEncontrados);
-    destacarMapa(encontrados);
+    desenhar(encontrados, semMapa);
+    salvarSecoesPendentes(encontrados);
 }
 
-function desenhar(encontrados, naoEncontrados) {
-    // Limpa a pesquisa simples para não misturar os resultados
-    document.getElementById("resultados").innerHTML = "";
+function resumoHtml() {
+    if (!lista.length) return "";
+    const totais = { pendente: 0, indisponivel: 0, comprado: 0 };
+    lista.forEach(e => totais[e.status]++);
 
-    let html = "";
+    const chips = Object.entries(STATUS).map(([chave, s]) =>
+        `<span class="chip ${s.classe}">${s.rotulo.slice(2)}: ${totais[chave]}</span>`
+    ).join("");
+
+    return `<div class="resumo-lista">${chips}</div>`;
+}
+
+function marcadoresHtml(entrada, posicao) {
+    return `<div class="marcadores">${
+        Object.entries(STATUS).map(([chave, s]) => {
+            const ativo = entrada.status === chave;
+            return `<button type="button"
+                        class="marcador ${s.classe}${ativo ? " ativo" : ""}"
+                        data-posicao="${posicao}" data-status="${chave}"
+                        aria-pressed="${ativo}">${s.rotulo}</button>`;
+        }).join("")
+    }</div>`;
+}
+
+function itemHtml(entrada, posicao, detalhesHtml) {
+    return `
+        <div class="lista-item ${STATUS[entrada.status].classe}">
+            <span class="nome-item">${esc(entrada.item)}</span>
+            ${detalhesHtml}
+            ${marcadoresHtml(entrada, posicao)}
+        </div>`;
+}
+
+function desenhar(encontrados, semMapa) {
+    let html = resumoHtml();
     let corredorAtual = null;
 
     encontrados.forEach(e => {
         const corredor = Math.ceil(e.secao / SECOES_POR_CORREDOR);
         if (corredor !== corredorAtual) {
-            html += `<h2 class="titulo-corredor">Corredor ${corredor}</h2>`;
+            html += `<h2 class="lista-titulo-corredor">Corredor ${corredor}</h2>`;
             corredorAtual = corredor;
         }
 
         const extras = e.total - e.produtos.length;
-        html += `
-            <div class="produto item-lista">
-                <span>${esc(e.item)}</span>
-                <span class="secaoResultado">Seção ${e.secao}</span>
-                <span class="detalhe-lista">
-                    ${e.produtos.map(p => esc(p.nome)).join(", ")}${extras > 0 ? ` e mais ${extras}` : ""}
-                </span>
-                ${e.outras.length ? `<span class="detalhe-lista">Também em: seção ${e.outras.join(", ")}</span>` : ""}
-                ${e.aproximado ? `<span class="detalhe-lista">Busca aproximada, confira se é esse produto.</span>` : ""}
-            </div>`;
+        const detalhes = `
+            <span class="secao-item">Seção ${e.secao}</span>
+            <span class="detalhe-item">
+                ${e.produtos.map(p => esc(p.nome)).join(", ")}${extras > 0 ? ` e mais ${extras}` : ""}
+            </span>
+            ${e.outras.length ? `<span class="detalhe-item">Também em: seção ${e.outras.join(", ")}</span>` : ""}
+            ${e.aproximado ? `<span class="detalhe-item">Busca aproximada, confira se é esse produto.</span>` : ""}`;
+
+        html += itemHtml(e.entrada, e.posicao, detalhes);
     });
 
-    if (naoEncontrados.length) {
-        html += `
-            <div class="aviso-nao-encontrado">
-                <strong>Não encontramos:</strong> ${naoEncontrados.map(esc).join(", ")}.
-                Procure um atendente.
-            </div>`;
+    if (semMapa.length) {
+        html += `<h2 class="lista-titulo-corredor">Não encontramos no mapa</h2>`;
+        semMapa.forEach(s => {
+            html += itemHtml(
+                s.entrada,
+                s.posicao,
+                `<span class="detalhe-item">Procure um atendente.</span>`
+            );
+        });
     }
 
     saidaLista.innerHTML = html;
 }
 
-function destacarMapa(encontrados) {
-    document.querySelectorAll(".secao").forEach(s => s.classList.remove("selecionada"));
-    encontrados.forEach(e => {
-        const secao = document.querySelector(`.secao[data-secao="${e.secao}"]`);
-        if (secao) secao.classList.add("selecionada");
-    });
-}
+// ---------- Eventos ----------
+
+// Um único "ouvinte" cuida dos cliques em todos os marcadores
+saidaLista.addEventListener("click", evento => {
+    const botao = evento.target.closest(".marcador");
+    if (!botao) return;
+
+    const entrada = lista[Number(botao.dataset.posicao)];
+    if (!entrada) return;
+
+    const novo = botao.dataset.status;
+    // Clicar de novo no marcador ativo (vermelho ou verde) volta para "falta comprar"
+    entrada.status = entrada.status === novo ? "pendente" : novo;
+
+    salvarLista();
+    renderizar();
+});
 
 botaoOrganizar.addEventListener("click", organizarLista);
+botaoLimpar.addEventListener("click", limparLista);
+
+// Ao abrir a página, mostra a lista que já estava salva
+campoLista.value = lista.map(e => e.item).join("\n");
+renderizar();

@@ -1,0 +1,150 @@
+:root {
+    --azul: #1d6fd8;
+    --vermelho: #c62828;
+    --verde: #15803d;
+    --texto: #1f2430;
+    --fundo: #f5f6f8;
+    --cartao: #ffffff;
+    --borda: #d9dce3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--texto);
+    background: var(--fundo);
+}
+
+.topo-lista {
+    padding: 16px 20px 8px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.topo-lista h1 { margin: 8px 0 0; font-size: 1.5rem; }
+
+.voltar, .ver-mapa {
+    color: var(--azul);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.voltar:hover, .ver-mapa:hover { text-decoration: underline; }
+
+.conteudo-lista {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 8px 20px 40px;
+}
+
+.entrada label { display: block; font-weight: 600; margin-bottom: 6px; }
+
+#lista-compras {
+    width: 100%;
+    padding: 10px 12px;
+    font: inherit;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    resize: vertical;
+}
+
+.acoes { display: flex; gap: 8px; margin: 10px 0 18px; flex-wrap: wrap; }
+
+.acoes button {
+    padding: 10px 16px;
+    font: inherit;
+    font-weight: 600;
+    border: 0;
+    border-radius: 8px;
+    background: var(--azul);
+    color: #fff;
+    cursor: pointer;
+}
+
+.acoes button.secundario {
+    background: transparent;
+    color: var(--texto);
+    border: 1px solid var(--borda);
+}
+
+/* Resumo com os totais de cada marcador */
+.resumo-lista { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.chip.status-pendente { background: var(--azul); }
+.chip.status-indisponivel { background: var(--vermelho); }
+.chip.status-comprado { background: var(--verde); }
+
+.lista-titulo-corredor {
+    margin: 22px 0 8px;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #555c6b;
+}
+
+/* Cada item da lista */
+.lista-item {
+    background: var(--cartao);
+    border: 1px solid var(--borda);
+    border-left: 6px solid var(--azul);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lista-item.status-pendente { border-left-color: var(--azul); }
+.lista-item.status-indisponivel { border-left-color: var(--vermelho); }
+.lista-item.status-comprado { border-left-color: var(--verde); }
+
+.lista-item .nome-item { font-weight: 700; font-size: 1.05rem; }
+
+.lista-item.status-comprado .nome-item {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.lista-item .secao-item { font-weight: 600; color: #555c6b; }
+.lista-item .detalhe-item { font-size: 0.9rem; color: #555c6b; }
+
+/* Os três marcadores */
+.marcadores { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+.marcador {
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.marcador.status-pendente { color: var(--azul); }
+.marcador.status-indisponivel { color: var(--vermelho); }
+.marcador.status-comprado { color: var(--verde); }
+
+.marcador.ativo { color: #fff; }
+.marcador.ativo.status-pendente { background: var(--azul); border-color: var(--azul); }
+.marcador.ativo.status-indisponivel { background: var(--vermelho); border-color: var(--vermelho); }
+.marcador.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
+
+.marcador:focus-visible, .acoes button:focus-visible {
+    outline: 3px solid #1d6fd855;
+    outline-offset: 2px;
+}
+
+.ver-mapa { display: inline-block; margin-top: 18px; }
