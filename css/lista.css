@@ -1,46 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap');
+
+/* Mesmas cores e fonte do mapa (estilo.css) */
 :root {
+    --papel: #FAF8F3;
+    --verde-mercado: #1F4D3B;
+    --verde-mercado-escuro: #163A2C;
+    --amarelo-etiqueta: #F5B700;
+    --grafite: #232323;
+    --cinza-borda: #D9D4C7;
+
+    /* Cores dos marcadores (pedidas pelo grupo) */
     --azul: #1d6fd8;
     --vermelho: #c62828;
     --verde: #15803d;
-    --neutro: #3b4252;
-    --texto: #1f2430;
-    --texto-suave: #555c6b;
-    --fundo: #f5f6f8;
+
+    --neutro: var(--verde-mercado);
+    --texto: var(--grafite);
+    --texto-suave: #6B665A;
+    --fundo: var(--papel);
     --cartao: #ffffff;
-    --borda: #d9dce3;
+    --borda: var(--cinza-borda);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 [hidden] { display: none !important; }
 
 body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Inter', sans-serif;
     color: var(--texto);
     background: var(--fundo);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .topo-lista {
-    padding: 14px 16px 0;
-    max-width: 860px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 350px;
+    padding: 6px 10px 0;
+    border-bottom: 3px solid var(--verde-mercado);
+    margin-top: 3px;
 }
 
-.topo-lista h1 { margin: 6px 0 0; font-size: 1.4rem; }
+.topo-lista h1 {
+    margin: 4px 0 2px;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--verde-mercado);
+}
 
 .voltar, .ver-mapa {
-    color: var(--azul);
+    color: var(--verde-mercado);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .voltar:hover, .ver-mapa:hover { text-decoration: underline; }
 
 .conteudo-lista {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 16px 40px;
+    width: 100%;
+    max-width: 350px;
+    padding: 0 5px 40px;
 }
 
 /* Parte fixa no topo: campo de adicionar + filtros */
@@ -57,23 +80,32 @@ body {
 .form-item input {
     flex: 1;
     min-width: 0;
-    padding: 10px 12px;
+    padding: 11px 12px;
     font: inherit;
-    border: 1px solid var(--borda);
-    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--grafite);
+    border: 2px solid var(--verde-mercado);
+    border-radius: 10px;
     background: #fff;
+    outline: none;
 }
 
+.form-item input::placeholder { color: #9A9585; font-weight: 500; font-size: 13px; }
+
 .form-item button {
-    padding: 10px 16px;
+    padding: 10px 14px;
     font: inherit;
-    font-weight: 600;
+    font-weight: 700;
     border: 0;
-    border-radius: 8px;
-    background: var(--azul);
+    border-radius: 10px;
+    background: var(--verde-mercado);
     color: #fff;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+.form-item button:hover { background: var(--verde-mercado-escuro); }
 
 .aviso-form {
     min-height: 1.3em;
@@ -118,8 +150,9 @@ body {
     background: var(--cartao);
     border: 1px solid var(--borda);
     border-left: 5px solid var(--azul);
-    border-radius: 8px;
-    padding: 7px 8px 7px 12px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(35, 35, 35, 0.08);
+    padding: 8px 8px 8px 12px;
     margin-bottom: 6px;
 }
 
@@ -148,7 +181,7 @@ body {
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--texto-suave);
-    background: #eceef2;
+    background: #EFEBDF;
     border-radius: 999px;
     white-space: nowrap;
 }
@@ -212,7 +245,7 @@ body {
 
 .marcador:focus-visible, .filtro:focus-visible, .remover:focus-visible,
 .form-item button:focus-visible, .link-botao:focus-visible {
-    outline: 3px solid #1d6fd855;
+    outline: 3px solid var(--amarelo-etiqueta);
     outline-offset: 2px;
 }
 
@@ -240,17 +273,15 @@ body {
 
 .ver-mapa { display: inline-block; margin-top: 16px; }
 
-/* Telas estreitas (celular): os marcadores vão para uma linha própria */
-@media (max-width: 640px) {
-    .tarefa { grid-template-columns: 1fr auto; }
+/* Marcadores numa linha própria (a página é estreita, como o mapa) */
+.tarefa { grid-template-columns: 1fr auto; }
 
-    .tarefa .remover { grid-column: 2; grid-row: 1; }
+.tarefa .remover { grid-column: 2; grid-row: 1; }
 
-    .tarefa .marcadores {
-        grid-column: 1 / -1;
-        grid-row: 3;
-        margin-top: 6px;
-    }
-
-    .marcador { flex: 1; padding: 4px 4px; font-size: 0.72rem; }
+.tarefa .marcadores {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 6px;
 }
+
+.marcador { flex: 1; padding: 4px 4px; font-size: 0.72rem; }

@@ -1,6 +1,10 @@
+/* Fonte Inter (opcional: sem internet o navegador usa uma fonte padrão parecida) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap');
+
 :root {
     --papel: #FAF8F3;
     --verde-mercado: #1F4D3B;
+    --verde-mercado-escuro: #163A2C;
     --amarelo-etiqueta: #F5B700;
     --grafite: #232323;
     --laranja-sinal: #E4572E;
@@ -44,9 +48,54 @@ header h1 {
     font-weight: bold;
 }
 
+/* Botão "Minha lista" */
+.btn-lista {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 11px 16px;
+    background-color: var(--verde-mercado);
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-lista svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn-lista:hover {
+    background-color: var(--verde-mercado-escuro);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(31, 77, 59, 0.28);
+}
+
+.btn-lista:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-lista:focus-visible {
+    outline: 3px solid var(--amarelo-etiqueta);
+    outline-offset: 2px;
+}
+
 /* Busca */
 #area-pesquisa {
-    margin-top: 5px;
+    margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -90,33 +139,19 @@ header h1 {
     display: none;
 }
 
-.secaoResultado{
-
+.secaoResultado {
     font-family: 'Inter', sans-serif;
     font-weight: bold;
-    background-color: rgb(103, 235, 103);
+    background-color: var(--verde-mercado);
+    color: #FFFFFF;
     padding: 5px 10px;
-    border-radius: 5px;
-
+    border-radius: 999px;
 }
 
-
-.valor-produto{
-
+.valor-produto {
     font-family: 'Inter', sans-serif;
     font-weight: bold;
-
 }
-
-.secao {
-    background-color: #FAF8F3;
-}
-
-.secao.selecionada {
-    background-color: rgb(103, 235, 103);
-    color: white;
-}
-
 
 .produto {
     background-color: #FFFFFF;
@@ -137,12 +172,14 @@ header h1 {
 
 /* Mapa do mercado */
 
-
 #mercado2d {
-    
-    height: 425px;
+    /* era 425px: a barra de rolagem cortava a parte de baixo das seções */
+    height: 448px;
     width: 350px;
     margin-top: 16px;
+    /* respiro nas bordas para o destaque (anel amarelo) não ser cortado */
+    padding: 6px;
+    scroll-padding-inline: 6px;
     display: flex;
     position: relative;
     overflow-x: auto;
@@ -150,26 +187,23 @@ header h1 {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     width: 100%;
-
+    scrollbar-width: thin;
+    scrollbar-color: var(--verde-mercado) transparent;
 }
 
-.gondula>*{
-
+.gondula > * {
     display: flex;
     flex-direction: column;
     height: 50px;
-
 }
 
 .gondula {
-
     display: flex;
     flex-direction: row;
     height: 420px;
     min-width: 95%;
     scroll-snap-align: start;
     gap: 1px;
-
 }
 
 .coluna {
@@ -177,20 +211,40 @@ header h1 {
     flex-direction: column;
 }
 
+/* Medidas das seções: o mapa depende delas, então só mexa na aparência abaixo */
 .coluna > * {
     flex: 1;
     aspect-ratio: 1.5;
-    color: var(--verde-mercado);
-    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 20px;
-    border: 1px solid black;
     width: 70px;
+}
 
+/* Aparência das seções */
+.secao {
+    position: relative;
+    color: var(--verde-mercado);
+    background-color: #FFFFFF;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(35, 35, 35, 0.08);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    transform: scale(0.93);
+    transition: transform 0.2s ease, background-color 0.2s ease,
+                color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.secao.selecionada {
+    background-color: var(--verde-mercado);
+    border-color: var(--verde-mercado);
+    color: #FFFFFF;
+    transform: scale(1.06);
+    z-index: 2;
+    box-shadow: 0 0 0 3px rgba(245, 183, 0, 0.65),
+                0 8px 16px rgba(31, 77, 59, 0.35);
 }
 
 .destaque {
@@ -199,101 +253,43 @@ header h1 {
     outline-offset: 2px;
 }
 
-.corredor{
-
-    font-size: 25px;
-    font-family: 'Inter', sans-serif;
+/* Corredor: linha tracejada no meio, com a etiqueta por cima */
+.corredor {
+    position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    text-align: center;
+    justify-content: center;
     width: 182px;
-    color: var(--verde-mercado); 
-    font-weight: bold;
-    flex-direction: column;
-    height: 100px;
-
+    height: 420px;
 }
 
-.passagem{
-
-    border: none;
-
-}
-/* Lista de compras */
-#area-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 10px;
+.corredor::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 50%;
+    border-left: 2px dashed var(--cinza-borda);
+    transform: translateX(-50%);
 }
 
-#area-lista label {
-    font-weight: bold;
-    color: var(--verde-mercado);
-}
-
-#lista-compras {
-    width: 100%;
-    height: 88px;
-    resize: vertical;
-    background-color: #FFFFFF;
-    border: 2px solid var(--verde-mercado);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color: var(--grafite);
-    outline: none;
-    font-weight: bold;
-}
-
-#btn-organizar {
+.corredor > div {
+    position: relative;
+    z-index: 1;
+    padding: 6px 14px;
     background-color: var(--verde-mercado);
     color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 999px;
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#resultado-lista {
-    margin-top: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-weight: bold;
-    resize: vertical;
-    overflow: auto;
-    height: 230px;
-}
-
-#resultado-lista:empty {
-    display: none;
-}
-
-.titulo-corredor {
-    font-size: 16px;
-    color: var(--verde-mercado);
-    border-bottom: 2px solid var(--amarelo-etiqueta);
-    padding-bottom: 2px;
-    margin-top: 6px;
-}
-
-.detalhe-lista {
-    width: 100%;
     font-size: 13px;
-    color: #5C5A52;
-    font-weight: bold;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(31, 77, 59, 0.25);
 }
 
-.aviso-nao-encontrado {
-    background-color: #FFFFFF;
-    border-left: 5px solid var(--laranja-sinal);
-    border-radius: 4px;
-    padding: 12px 14px;
-    font-size: 15px;
+.passagem {
+    border: none;
 }
