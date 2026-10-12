@@ -2,13 +2,17 @@
     --azul: #1d6fd8;
     --vermelho: #c62828;
     --verde: #15803d;
+    --neutro: #3b4252;
     --texto: #1f2430;
+    --texto-suave: #555c6b;
     --fundo: #f5f6f8;
     --cartao: #ffffff;
     --borda: #d9dce3;
 }
 
 * { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
 
 body {
     margin: 0;
@@ -18,12 +22,12 @@ body {
 }
 
 .topo-lista {
-    padding: 16px 20px 8px;
-    max-width: 760px;
+    padding: 14px 16px 0;
+    max-width: 860px;
     margin: 0 auto;
 }
 
-.topo-lista h1 { margin: 8px 0 0; font-size: 1.5rem; }
+.topo-lista h1 { margin: 6px 0 0; font-size: 1.4rem; }
 
 .voltar, .ver-mapa {
     color: var(--azul);
@@ -34,25 +38,33 @@ body {
 .voltar:hover, .ver-mapa:hover { text-decoration: underline; }
 
 .conteudo-lista {
-    max-width: 760px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 8px 20px 40px;
+    padding: 0 16px 40px;
 }
 
-.entrada label { display: block; font-weight: 600; margin-bottom: 6px; }
+/* Parte fixa no topo: campo de adicionar + filtros */
+.painel-topo {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--fundo);
+    padding: 12px 0 8px;
+}
 
-#lista-compras {
-    width: 100%;
+.form-item { display: flex; gap: 8px; }
+
+.form-item input {
+    flex: 1;
+    min-width: 0;
     padding: 10px 12px;
     font: inherit;
     border: 1px solid var(--borda);
     border-radius: 8px;
-    resize: vertical;
+    background: #fff;
 }
 
-.acoes { display: flex; gap: 8px; margin: 10px 0 18px; flex-wrap: wrap; }
-
-.acoes button {
+.form-item button {
     padding: 10px 16px;
     font: inherit;
     font-weight: 600;
@@ -63,70 +75,109 @@ body {
     cursor: pointer;
 }
 
-.acoes button.secundario {
-    background: transparent;
-    color: var(--texto);
-    border: 1px solid var(--borda);
-}
-
-/* Resumo com os totais de cada marcador */
-.resumo-lista { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-
-.chip {
-    padding: 6px 12px;
-    border-radius: 999px;
+.aviso-form {
+    min-height: 1.3em;
+    margin: 4px 2px 0;
     font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+/* Filtros (também mostram a contagem de cada marcador) */
+.filtros { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.filtro {
+    padding: 4px 12px;
+    font: inherit;
+    font-size: 0.82rem;
     font-weight: 700;
-    color: #fff;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    cursor: pointer;
 }
 
-.chip.status-pendente { background: var(--azul); }
-.chip.status-indisponivel { background: var(--vermelho); }
-.chip.status-comprado { background: var(--verde); }
+.filtro.f-todos { color: var(--neutro); }
+.filtro.status-pendente { color: var(--azul); }
+.filtro.status-indisponivel { color: var(--vermelho); }
+.filtro.status-comprado { color: var(--verde); }
 
-.lista-titulo-corredor {
-    margin: 22px 0 8px;
-    font-size: 1.05rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #555c6b;
-}
+.filtro.ativo { color: #fff; }
+.filtro.ativo.f-todos { background: var(--neutro); border-color: var(--neutro); }
+.filtro.ativo.status-pendente { background: var(--azul); border-color: var(--azul); }
+.filtro.ativo.status-indisponivel { background: var(--vermelho); border-color: var(--vermelho); }
+.filtro.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
 
-/* Cada item da lista */
-.lista-item {
+/* A lista de tarefas */
+.lista-tarefas { list-style: none; margin: 8px 0 0; padding: 0; }
+
+.tarefa {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 2px 10px;
     background: var(--cartao);
     border: 1px solid var(--borda);
-    border-left: 6px solid var(--azul);
+    border-left: 5px solid var(--azul);
     border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
+    padding: 7px 8px 7px 12px;
+    margin-bottom: 6px;
+}
+
+.tarefa.status-pendente { border-left-color: var(--azul); }
+.tarefa.status-indisponivel { border-left-color: var(--vermelho); }
+.tarefa.status-comprado { border-left-color: var(--verde); }
+
+.tarefa-info {
+    grid-column: 1;
     display: flex;
-    flex-direction: column;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.tarefa-nome { font-weight: 700; overflow-wrap: anywhere; }
+
+.tarefa.status-comprado .tarefa-nome {
+    text-decoration: line-through;
+    opacity: 0.55;
+}
+
+.tarefa-local {
+    padding: 1px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--texto-suave);
+    background: #eceef2;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.tarefa-detalhe {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    font-size: 0.78rem;
+    color: var(--texto-suave);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Os três marcadores */
+.marcadores {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: flex;
     gap: 4px;
 }
 
-.lista-item.status-pendente { border-left-color: var(--azul); }
-.lista-item.status-indisponivel { border-left-color: var(--vermelho); }
-.lista-item.status-comprado { border-left-color: var(--verde); }
-
-.lista-item .nome-item { font-weight: 700; font-size: 1.05rem; }
-
-.lista-item.status-comprado .nome-item {
-    text-decoration: line-through;
-    opacity: 0.6;
-}
-
-.lista-item .secao-item { font-weight: 600; color: #555c6b; }
-.lista-item .detalhe-item { font-size: 0.9rem; color: #555c6b; }
-
-/* Os três marcadores */
-.marcadores { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-
 .marcador {
-    padding: 6px 12px;
+    padding: 3px 9px;
     font: inherit;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.76rem;
+    font-weight: 700;
+    white-space: nowrap;
     background: transparent;
     border: 2px solid currentColor;
     border-radius: 999px;
@@ -142,9 +193,64 @@ body {
 .marcador.ativo.status-indisponivel { background: var(--vermelho); border-color: var(--vermelho); }
 .marcador.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
 
-.marcador:focus-visible, .acoes button:focus-visible {
+.remover {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: #7a8190;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.remover:hover { color: var(--vermelho); background: #fbeaea; }
+
+.marcador:focus-visible, .filtro:focus-visible, .remover:focus-visible,
+.form-item button:focus-visible, .link-botao:focus-visible {
     outline: 3px solid #1d6fd855;
     outline-offset: 2px;
 }
 
-.ver-mapa { display: inline-block; margin-top: 18px; }
+.vazio {
+    padding: 22px 12px;
+    text-align: center;
+    color: var(--texto-suave);
+}
+
+.acoes-lista { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+
+.link-botao {
+    padding: 0;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texto-suave);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link-botao.perigo { color: var(--vermelho); }
+
+.ver-mapa { display: inline-block; margin-top: 16px; }
+
+/* Telas estreitas (celular): os marcadores vão para uma linha própria */
+@media (max-width: 640px) {
+    .tarefa { grid-template-columns: 1fr auto; }
+
+    .tarefa .remover { grid-column: 2; grid-row: 1; }
+
+    .tarefa .marcadores {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        margin-top: 6px;
+    }
+
+    .marcador { flex: 1; padding: 4px 4px; font-size: 0.72rem; }
+}

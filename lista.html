@@ -13,16 +13,24 @@
   </header>
 
   <main class="conteudo-lista">
-    <section class="entrada">
-      <label for="lista-compras">Digite os itens (um por linha ou separados por vírgula)</label>
-      <textarea id="lista-compras" rows="6" placeholder="arroz&#10;feijão&#10;banana"></textarea>
-      <div class="acoes">
-        <button id="btn-organizar" type="button">Organizar lista</button>
-        <button id="btn-limpar" type="button" class="secundario">Limpar lista</button>
-      </div>
-    </section>
+    <!-- Esta parte fica fixa no topo enquanto você rola a lista -->
+    <div class="painel-topo">
+      <form id="form-item" class="form-item" autocomplete="off">
+        <input id="novo-item" type="text"
+               placeholder="Digite um item e aperte Enter (vários? separe por vírgula)"
+               aria-label="Novo item da lista">
+        <button type="submit">Adicionar</button>
+      </form>
+      <p id="aviso-form" class="aviso-form" aria-live="polite"></p>
+      <div id="filtros" class="filtros"></div>
+    </div>
 
-    <section id="resultado-lista" aria-live="polite"></section>
+    <ul id="resultado-lista" class="lista-tarefas"></ul>
+
+    <div id="acoes-lista" class="acoes-lista" hidden>
+      <button type="button" id="btn-limpar-comprados" class="link-botao">Limpar comprados</button>
+      <button type="button" id="btn-limpar" class="link-botao perigo">Limpar tudo</button>
+    </div>
 
     <a href="index.html" class="ver-mapa">Ver no mapa</a>
   </main>
