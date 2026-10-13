@@ -34,6 +34,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .topo-lista {
@@ -55,7 +56,7 @@ body {
     color: var(--verde-mercado);
     text-decoration: none;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .voltar:hover, .ver-mapa:hover { text-decoration: underline; }
@@ -68,11 +69,13 @@ body {
 
 /* Parte fixa no topo: campo de adicionar + filtros */
 .painel-topo {
+    width: 100%;
     position: sticky;
     top: 0;
     z-index: 10;
     background: var(--fundo);
     padding: 12px 0 8px;
+    width: 373px;
 }
 
 .form-item { display: flex; gap: 8px; }
@@ -140,7 +143,7 @@ body {
 .filtro.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
 
 /* A lista de tarefas */
-.lista-tarefas { list-style: none; margin: 8px 0 0; padding: 0; }
+.lista-tarefas { list-style: none; margin: 8px 0 0; padding: 0; width: 110%; }
 
 .tarefa {
     display: grid;
