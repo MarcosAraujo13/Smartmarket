@@ -175,9 +175,9 @@ header h1 {
 
 #mercado2d {
     /* era 425px: a barra de rolagem cortava a parte de baixo das seções */
-    height: 448px;
+    height: 550px;
     width: 350px;
-    margin-top: 16px;
+    margin-top: 10px;
     /* respiro nas bordas para o destaque (anel amarelo) não ser cortado */
     padding: 6px;
     scroll-padding-inline: 6px;
@@ -195,14 +195,14 @@ header h1 {
 .gondula > * {
     display: flex;
     flex-direction: column;
-    height: 50px;
+    height: 100px;
 }
 
 .gondula {
     display: flex;
     flex-direction: row;
-    height: 420px;
-    min-width: 95%;
+    height: 100%;
+    min-width: 100%;
     scroll-snap-align: start;
     gap: 1px;
 }
@@ -210,6 +210,7 @@ header h1 {
 .coluna {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 /* Medidas das seções: o mapa depende delas, então só mexa na aparência abaixo */
@@ -220,6 +221,7 @@ header h1 {
     align-items: center;
     justify-content: center;
     width: 70px;
+    
 }
 
 /* Aparência das seções */
@@ -262,7 +264,7 @@ header h1 {
     align-items: center;
     justify-content: center;
     width: 182px;
-    height: 420px;
+    height: 100%;
 }
 
 .corredor::before {
