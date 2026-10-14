@@ -75,7 +75,6 @@ body {
     z-index: 10;
     background: var(--fundo);
     padding: 12px 0 8px;
-    width: 373px;
 }
 
 .form-item { display: flex; gap: 8px; }
@@ -143,7 +142,7 @@ body {
 .filtro.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
 
 /* A lista de tarefas */
-.lista-tarefas { list-style: none; margin: 8px 0 0; padding: 0; width: 110%; }
+.lista-tarefas { list-style: none; margin: 8px 0 0; padding: 0; width: 100%; }
 
 .tarefa {
     display: grid;
