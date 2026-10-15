@@ -16,8 +16,8 @@ const CHAVE_SECOES = "secoesLista";
 
 // Os três marcadores: azul, vermelho e verde (as cores ficam no lista.css)
 const STATUS = {
-    pendente:     { nome: "Falta comprar",      simbolo: "○", classe: "status-pendente" },
-    indisponivel: { nome: "Não tem no mercado", simbolo: "✕", classe: "status-indisponivel" },
+    pendente:     { nome: "Comprar",      simbolo: "○", classe: "status-pendente" },
+    indisponivel: { nome: "Indisponível",       simbolo: "✕", classe: "status-indisponivel" },
     comprado:     { nome: "Comprado",           simbolo: "✓", classe: "status-comprado" }
 };
 

@@ -29,7 +29,7 @@ body {
 
 main {
     width: 100%;
-    max-width: 373px;
+    max-width: 350px;
     padding: 0 5px;
 
 }
@@ -191,6 +191,7 @@ header h1 {
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: var(--verde-mercado) transparent;
+    padding-bottom: 10px;
 }
 
 .gondula > * {
