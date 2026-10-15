@@ -3,8 +3,8 @@
 /* Mesmas cores e fonte do mapa (estilo.css) */
 :root {
     --papel: #FAF8F3;
-    --verde-mercado: #1F4D3B;
-    --verde-mercado-escuro: #163A2C;
+    --verde-mercado: #183f12;
+    --verde-mercado-escuro: #0c1f09;
     --amarelo-etiqueta: #F5B700;
     --grafite: #232323;
     --cinza-borda: #D9D4C7;
@@ -36,27 +36,34 @@ body {
     align-items: center;
     width: 100%;
 }
-
 .topo-lista {
+    position: relative;            
     width: 100%;
     max-width: 350px;
     padding: 6px 10px 0;
     border-bottom: 3px solid var(--verde-mercado);
-    margin-top: 3px;
+    margin-top: 3px;           
 }
-
 .topo-lista h1 {
     margin: 4px 0 2px;
     font-size: 22px;
     letter-spacing: -0.5px;
     color: var(--verde-mercado);
+    text-align: center;            /* centraliza o h1 */
 }
-
-.voltar, .ver-mapa {
+.ver-mapa {
     color: var(--verde-mercado);
     text-decoration: none;
     font-weight: 1000;
     font-size: 20px;
+}
+.voltar {
+    color: var(--verde-mercado);
+    position: absolute;
+    left: 10px;             /* canto esquerdo */
+    top: 65%;               /* meio da altura do cabeçalho */
+    transform: translateY(-50%);
+    line-height: 1;
 }
 
 .voltar:hover, .ver-mapa:hover { text-decoration: underline; }
