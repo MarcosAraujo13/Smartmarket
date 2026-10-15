@@ -49,6 +49,7 @@ header h1 {
     font-weight: bold;
 }
 
+
 /* Botão "Minha lista" */
 .btn-lista {
     display: flex;
@@ -293,6 +294,28 @@ header h1 {
     box-shadow: 0 4px 10px rgba(31, 77, 59, 0.25);
 }
 
+.logo-titulo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.logo-titulo img {
+    width: 50px;
+    height: 45px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-titulo h1 {
+    margin: 0;
+    white-space: nowrap;
+    
+}
 .passagem {
     border: none;
 }
