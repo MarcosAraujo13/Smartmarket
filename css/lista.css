@@ -183,7 +183,7 @@ body {
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--texto-suave);
-    background: #EFEBDF;
+    background: #c8e3af;
     border-radius: 999px;
     white-space: nowrap;
 }
@@ -260,15 +260,17 @@ body {
 .acoes-lista { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
 
 .link-botao {
-    padding: 0;
+    padding: 5px 5px;
     font: inherit;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--texto-suave);
     background: none;
     border: 0;
-    text-decoration: underline;
     cursor: pointer;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: #f5f0e2;
 }
 
 .link-botao.perigo { color: var(--vermelho); }
