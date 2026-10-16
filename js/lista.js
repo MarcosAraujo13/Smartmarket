@@ -299,7 +299,7 @@ function renderizar() {
         );
 
     if (!lista.length) {
-        saidaLista.innerHTML = `<li class="vazio">Sua lista está vazia. Adicione o primeiro item acima.</li>`;
+        saidaLista.innerHTML = `<li class="vazio"><div style="font-size:40px">🛒</div>Sua lista está vazia. Adicione o primeiro item acima.</li>`;
     } else if (!visiveis.length) {
         saidaLista.innerHTML = `<li class="vazio">Nenhum item com este marcador.</li>`;
     } else {

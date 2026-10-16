@@ -29,39 +29,48 @@
 body {
     font-family: 'Inter', sans-serif;
     color: var(--texto);
-    background: var(--fundo);
+    background:
+        radial-gradient(circle at 100% 0%, rgba(245, 183, 0, 0.12), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(24, 63, 18, 0.08), transparent 45%),
+        var(--fundo);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
+
 .topo-lista {
-    position: relative;            
+    position: relative;
     width: 100%;
     max-width: 350px;
-    padding: 6px 10px 0;
+    padding: 10px 10px 8px;
     border-bottom: 3px solid var(--verde-mercado);
-    margin-top: 3px;           
+    margin-top: 3px;
 }
+
 .topo-lista h1 {
     margin: 4px 0 2px;
     font-size: 22px;
+    font-weight: 800;
     letter-spacing: -0.5px;
     color: var(--verde-mercado);
-    text-align: center;            /* centraliza o h1 */
+    text-align: center;
 }
+
 .ver-mapa {
     color: var(--verde-mercado);
     text-decoration: none;
-    font-weight: 1000;
+    font-weight: 800;
     font-size: 20px;
 }
+
 .voltar {
     color: var(--verde-mercado);
     position: absolute;
-    left: 10px;             /* canto esquerdo */
-    top: 65%;               /* meio da altura do cabeçalho */
+    left: 10px;
+    top: 55%;
     transform: translateY(-50%);
     line-height: 1;
 }
@@ -98,9 +107,15 @@ body {
     border-radius: 10px;
     background: #fff;
     outline: none;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.form-item input::placeholder { color: #9A9585; font-weight: 500; font-size: 13px; }
+.form-item input:focus {
+    box-shadow: 0 0 0 4px rgba(245, 183, 0, 0.35);
+    border-color: var(--verde-mercado-escuro);
+}
+
+.form-item input::placeholder { color: #7d786a; font-weight: 500; font-size: 13px; }
 
 .form-item button {
     padding: 10px 14px;
@@ -163,7 +178,10 @@ body {
     box-shadow: 0 1px 3px rgba(35, 35, 35, 0.08);
     padding: 8px 8px 8px 12px;
     margin-bottom: 6px;
+    transition: box-shadow 0.15s ease;
 }
+
+.tarefa:hover { box-shadow: 0 4px 10px rgba(35, 35, 35, 0.12); }
 
 .tarefa.status-pendente { border-left-color: var(--azul); }
 .tarefa.status-indisponivel { border-left-color: var(--vermelho); }
@@ -189,7 +207,7 @@ body {
     padding: 1px 8px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--texto-suave);
+    color: var(--verde-mercado);
     background: #c8e3af;
     border-radius: 999px;
     white-space: nowrap;
@@ -224,13 +242,14 @@ body {
     border: 2px solid currentColor;
     border-radius: 999px;
     cursor: pointer;
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .marcador.status-pendente { color: var(--azul); }
 .marcador.status-indisponivel { color: var(--vermelho); }
 .marcador.status-comprado { color: var(--verde); }
 
-.marcador.ativo { color: #fff; }
+.marcador.ativo { color: #fff; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25); }
 .marcador.ativo.status-pendente { background: var(--azul); border-color: var(--azul); }
 .marcador.ativo.status-indisponivel { background: var(--vermelho); border-color: var(--vermelho); }
 .marcador.ativo.status-comprado { background: var(--verde); border-color: var(--verde); }
@@ -264,23 +283,25 @@ body {
     color: var(--texto-suave);
 }
 
-.acoes-lista { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+.acoes-lista { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
 
 .link-botao {
-    padding: 5px 5px;
+    padding: 8px 14px;
     font: inherit;
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--texto-suave);
-    background: none;
-    border: 0;
+    font-weight: 700;
+    color: var(--verde-mercado);
+    background: transparent;
+    border: 2px solid var(--verde-mercado);
+    border-radius: 999px;
     cursor: pointer;
-    border: 2px solid black;
-    border-radius: 10px;
-    background-color: #f5f0e2;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.link-botao.perigo { color: var(--vermelho); }
+.link-botao:hover { background: var(--verde-mercado); color: #fff; }
+
+.link-botao.perigo { color: var(--vermelho); border-color: var(--vermelho); }
+.link-botao.perigo:hover { background: var(--vermelho); color: #fff; }
 
 .ver-mapa { display: inline-block; margin-top: 16px; }
 
@@ -296,3 +317,11 @@ body {
 }
 
 .marcador { flex: 1; padding: 10px 4px; font-size: 0.72rem; }
+
+/* Telas grandes (computador) */
+@media (min-width: 700px) {
+    .topo-lista,
+    .conteudo-lista {
+        max-width: 480px;
+    }
+}
