@@ -1,8 +1,8 @@
 const produtos = [
 
   // Seção 1 — Frutas
-  { id: 61,  nome: "Banana Prata 1kg",              valor: 6.99,  seção: 1 },
-  { id: 62,  nome: "Maçã Gala 1kg",                 valor: 8.99,  seção: 1 },
+  { id: 61,  nome: "Banana Prata 1kg",               valor: 6.99,  seção: 1 },
+  { id: 62,  nome: "Maçã Gala 1kg",                  valor: 8.99,  seção: 1 },
   { id: 63,  nome: "Laranja Pera 1kg",               valor: 5.49,  seção: 1 },
   { id: 121, nome: "Uva Itália 500g",                valor: 9.99,  seção: 1 },
   { id: 122, nome: "Melancia Unidade (~5kg)",        valor: 14.90, seção: 1 },
@@ -14,11 +14,11 @@ const produtos = [
   { id: 281, nome: "Pera Williams 1kg",              valor: 9.49,  seção: 1 },
   { id: 282, nome: "Abacate Unidade",                valor: 6.99,  seção: 1 },
   { id: 283, nome: "Kiwi Unidade",                   valor: 2.99,  seção: 1 },
-  { id: 400, nome: "Pêssego 1kg", valor: 11.90, seção: 1 },
-  { id: 401, nome: "Ameixa Vermelha 1kg", valor: 12.49, seção: 1 },
-  { id: 402, nome: "Goiaba Vermelha 1kg", valor: 7.99, seção: 1 },
-  { id: 403, nome: "Maracujá 1kg", valor: 9.99, seção: 1 },
-  { id: 404, nome: "Coco Seco Unidade", valor: 5.49, seção: 1 },
+  { id: 400, nome: "Pêssego 1kg",                    valor: 11.90, seção: 1 },
+  { id: 401, nome: "Ameixa Vermelha 1kg",            valor: 12.49, seção: 1 },
+  { id: 402, nome: "Goiaba Vermelha 1kg",            valor: 7.99,  seção: 1 },
+  { id: 403, nome: "Maracujá 1kg",                   valor: 9.99,  seção: 1 },
+  { id: 404, nome: "Coco Seco Unidade",              valor: 5.49,  seção: 1 },
 
   // Seção 2 — Verduras e Legumes
   { id: 64,  nome: "Tomate 1kg",                     valor: 7.99,  seção: 2 },
