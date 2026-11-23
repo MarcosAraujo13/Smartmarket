@@ -12,7 +12,6 @@ campoPesquisa.addEventListener("input", pesquisar);
 
 function pesquisar() {
 
-    //Tirar os acentos para normalizar a pesquisa
     function normalizar(texto){
         return texto
         .normalize("NFD")
